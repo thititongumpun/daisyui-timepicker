@@ -57,6 +57,7 @@
     }
   },
   "devDependencies": {
+    "@changesets/cli": "2.31.1",
     "@tailwindcss/cli": "^4.3.3",
     "@types/react": "^19.2.18",
     "daisyui": "^5.7.16",
@@ -72,6 +73,8 @@
     "test": "vitest run",
     "typecheck": "tsc --noEmit -p tsconfig.json && tsc --noEmit -p tsconfig.test.json",
     "demo:build": "npm run build && tailwindcss -i demo/app.css -o demo/out.css",
-    "prepublishOnly": "npm run build && npm test"
+    "prepublishOnly": "npm run build && npm test",
+    "changeset": "changeset",
+    "release": "changeset publish"
   }
 }
