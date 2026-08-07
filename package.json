@@ -57,17 +57,21 @@
     }
   },
   "devDependencies": {
-    "typescript": "^5.9.0",
-    "vitest": "^4.1.8",
+    "@tailwindcss/cli": "^4.3.3",
+    "@types/react": "^19.2.18",
+    "daisyui": "^5.7.16",
     "jsdom": "^29.1.1",
     "preact": "^10.29.8",
     "react": "^19.2.8",
-    "@types/react": "^19.2.18"
+    "tailwindcss": "^4.3.3",
+    "typescript": "^5.9.0",
+    "vitest": "^4.1.8"
   },
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "test": "vitest run",
     "typecheck": "tsc --noEmit -p tsconfig.json && tsc --noEmit -p tsconfig.test.json",
+    "demo:build": "npm run build && tailwindcss -i demo/app.css -o demo/out.css",
     "prepublishOnly": "npm run build && npm test"
   }
 }
