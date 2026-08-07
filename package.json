@@ -39,7 +39,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/thiti/daisyui-timepicker"
+    "url": "https://github.com/thititongumpun/daisyui-timepicker"
   },
   "publishConfig": {
     "access": "public"
