@@ -1,6 +1,6 @@
 {
   "name": "daisyui-timepicker",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Framework-agnostic <daisy-time-picker> custom element styled with daisyUI 5. 12h/24h, zero runtime dependencies.",
   "license": "MIT",
   "type": "module",
