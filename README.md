@@ -1,5 +1,8 @@
 # daisyui-timepicker
 
+[![npm version](https://img.shields.io/npm/v/daisyui-timepicker.svg)](https://www.npmjs.com/package/daisyui-timepicker)
+[![license](https://img.shields.io/npm/l/daisyui-timepicker.svg)](https://github.com/thititongumpun/daisyui-timepicker/blob/main/LICENSE)
+
 A zero-dependency `<daisy-time-picker>` custom element, styled entirely with
 daisyUI 5 / Tailwind classes. Supports 12-hour and 24-hour formats.
 
