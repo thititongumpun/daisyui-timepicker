@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>daisyui-timepicker demo</title>
+<link rel="stylesheet" href="out.css">
+</head>
+<body class="min-h-screen bg-base-200 p-8">
+<div class="mx-auto max-w-3xl space-y-8">
+
+<header class="space-y-1">
+  <h1 class="text-2xl font-bold">daisy-time-picker demo</h1>
+  <p class="text-sm opacity-70">
+    Manual, browser-only proof that the emitted daisyUI/Tailwind classes are
+    actually styled — see <code>README-manual-checks.md</code> for what only a
+    real browser (not the test suite) can verify.
+  </p>
+</header>
+
+<form id="demo-form" class="space-y-6">
+
+  <fieldset class="fieldset bg-base-100 border border-base-300 rounded p-4">
+    <legend class="fieldset-legend">1. 24-hour</legend>
+    <label for="picker-24" class="label">Meeting time (24h)</label>
+    <daisy-time-picker id="picker-24" name="time24" hour-cycle="24"></daisy-time-picker>
+  </fieldset>
+
+  <fieldset class="fieldset bg-base-100 border border-base-300 rounded p-4">
+    <legend class="fieldset-legend">2. 12-hour</legend>
+    <daisy-time-picker name="time12" hour-cycle="12"></daisy-time-picker>
+  </fieldset>
+
+  <fieldset class="fieldset bg-base-100 border border-base-300 rounded p-4">
+    <legend class="fieldset-legend">3. Constrained (09:00&ndash;18:00, 15 min step)</legend>
+    <daisy-time-picker name="timeWorkday" min="09:00" max="18:00" step="900"></daisy-time-picker>
+  </fieldset>
+
+  <fieldset class="fieldset bg-base-100 border border-base-300 rounded p-4">
+    <legend class="fieldset-legend">4. Required, empty</legend>
+    <daisy-time-picker name="timeRequired" required></daisy-time-picker>
+  </fieldset>
+
+  <div class="flex gap-2">
+    <button type="submit" class="btn btn-primary">Submit</button>
+    <button type="reset" class="btn">Reset</button>
+  </div>
+</form>
+
+<section class="space-y-2">
+  <h2 class="text-lg font-semibold">Live readout</h2>
+  <p class="text-sm opacity-70">Updates on every <code>change</code> and <code>submit</code>.</p>
+  <pre id="readout" class="bg-neutral text-neutral-content text-xs p-4 rounded overflow-x-auto"></pre>
+</section>
+
+</div>
+
+<script type="module" src="../dist/index.js"></script>
+<script type="module">
+const form = document.getElementById('demo-form')
+const readout = document.getElementById('readout')
+const pickers = Array.from(form.querySelectorAll('daisy-time-picker'))
+const FLAGS = [
+  'valueMissing', 'badInput', 'rangeUnderflow', 'rangeOverflow',
+  'stepMismatch', 'typeMismatch', 'patternMismatch', 'tooLong', 'tooShort', 'customError',
+]
+
+function render() {
+  const data = new FormData(form)
+  const entries = Array.from(data.entries())
+
+  const pickerInfo = pickers.map(p => {
+    const flags = {}
+    for (const f of FLAGS) if (p.validity?.[f]) flags[f] = true
+    return {
+      name: p.getAttribute('name'),
+      value: p.value,
+      resolvedHourCycle: p.resolvedHourCycle,
+      validity: flags,
+    }
+  })
+
+  readout.textContent = JSON.stringify(
+    {
+      formData: entries,
+      formCheckValidity: form.checkValidity(),
+      pickers: pickerInfo,
+    },
+    null,
+    2,
+  )
+}
+
+form.addEventListener('change', render)
+form.addEventListener('submit', e => {
+  e.preventDefault()
+  render()
+})
+
+render()
+</script>
+</body>
+</html>

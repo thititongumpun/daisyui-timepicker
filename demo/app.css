@@ -1,0 +1,17 @@
+/*
+ * source(none) disables Tailwind's automatic content-detection heuristic,
+ * which otherwise walks the whole repo (respecting .gitignore) looking for
+ * class names — including inside src/, which is tracked, not gitignored.
+ * With auto-detection left on, deleting the "@source ../dist" line below
+ * makes no difference: classes keep getting found via src/index.ts instead,
+ * so the negative control silently passes for the wrong reason.
+ *
+ * With it off, only the explicit @source directives below contribute,
+ * matching what a real consumer sees: they install the package and get
+ * only dist/ (package.json's "files" is ["dist"]), no src/. This is what
+ * makes removing the "../dist" line a real negative control.
+ */
+@import "tailwindcss" source(none);
+@plugin "daisyui";
+@source "../dist";
+@source "./index.html";

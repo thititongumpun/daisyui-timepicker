@@ -1,0 +1,15 @@
+{
+  // The base config has rootDir: "src" + declaration + include: ["src"], so the
+  // test/ directory is never typechecked by `npm run build` — and vitest
+  // transpiles without checking, so a type error in a test would go unnoticed
+  // indefinitely. Adding "test" to the base include instead would emit compiled
+  // tests into dist/ and publish them. This config checks src + test together
+  // and emits nothing.
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "declaration": false,
+    "rootDir": "."
+  },
+  "include": ["src", "test"]
+}

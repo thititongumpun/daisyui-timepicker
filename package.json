@@ -1,0 +1,73 @@
+{
+  "name": "daisyui-timepicker",
+  "version": "0.1.0",
+  "description": "Framework-agnostic <daisy-time-picker> custom element styled with daisyUI 5. 12h/24h, zero runtime dependencies.",
+  "license": "MIT",
+  "type": "module",
+  "sideEffects": [
+    "./dist/index.js"
+  ],
+  "files": [
+    "dist"
+  ],
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "unpkg": "dist/index.js",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./preact": {
+      "types": "./dist/preact.d.ts",
+      "import": "./dist/preact.js"
+    },
+    "./react": {
+      "types": "./dist/react.d.ts",
+      "import": "./dist/react.js"
+    }
+  },
+  "keywords": [
+    "daisyui",
+    "tailwindcss",
+    "timepicker",
+    "time-picker",
+    "custom-element",
+    "web-component",
+    "preact",
+    "react"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/thiti/daisyui-timepicker"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "peerDependencies": {
+    "daisyui": ">=5",
+    "tailwindcss": ">=4"
+  },
+  "peerDependenciesMeta": {
+    "daisyui": {
+      "optional": true
+    },
+    "tailwindcss": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "typescript": "^5.9.0",
+    "vitest": "^4.1.8",
+    "jsdom": "^29.1.1",
+    "preact": "^10.29.8",
+    "react": "^19.2.8",
+    "@types/react": "^19.2.18"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit -p tsconfig.json && tsc --noEmit -p tsconfig.test.json",
+    "prepublishOnly": "npm run build && npm test"
+  }
+}
