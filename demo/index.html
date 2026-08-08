@@ -7,6 +7,12 @@
 <meta name="description" content="A zero-dependency &lt;daisy-time-picker&gt; custom element in light DOM, styled only with daisyUI 5 and Tailwind classes, so it inherits your theme. 12-hour and 24-hour, form-associated, 12.4 kB gzip.">
 <link rel="canonical" href="https://thititongumpun.github.io/daisyui-timepicker/">
 
+<!-- Clock hands read 9:30, matching the hero picker's value. The 32px PNG is
+     the fallback for browsers that don't take an SVG favicon. -->
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+
 <meta property="og:type" content="website">
 <meta property="og:title" content="daisyui-timepicker — the time picker daisyUI doesn’t ship">
 <meta property="og:description" content="A zero-dependency &lt;daisy-time-picker&gt; custom element in light DOM, styled only with daisyUI 5 and Tailwind classes, so it inherits your theme. 12-hour and 24-hour, form-associated, 12.4 kB gzip.">
@@ -624,7 +630,13 @@ code, kbd, pre, .mono { font-family: var(--font-mono); font-variant-ligatures: n
         </dl>
       </div>
 
-      <div style="display: grid; gap: var(--space-md)">
+      <!-- grid-template-columns is explicit on purpose: an implicit auto track
+           sizes to the widest item's max-content, which is the install command
+           below. That made this column 434px wide inside a 288px viewport at
+           320px, and body's overflow-x: clip hid the damage instead of
+           scrolling it. minmax(0, …) lets the track shrink; the <pre> then
+           scrolls inside its own box, which is what it is there for. -->
+      <div style="display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-md)">
         <div class="codebox" style="padding: var(--space-lg)">
           <label class="label" for="hero-time">Meeting time</label>
           <daisy-time-picker id="hero-time" name="time" hour-cycle="24" value="09:30"></daisy-time-picker>
