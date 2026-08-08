@@ -1,103 +1,1227 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>daisyui-timepicker demo</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>daisyui-timepicker — the time picker daisyUI doesn’t ship</title>
+<meta name="description" content="A zero-dependency &lt;daisy-time-picker&gt; custom element in light DOM, styled only with daisyUI 5 and Tailwind classes, so it inherits your theme. 12-hour and 24-hour, form-associated, 12.4 kB gzip.">
+<link rel="canonical" href="https://thititongumpun.github.io/daisyUI-timepicker/">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="daisyui-timepicker — the time picker daisyUI doesn’t ship">
+<meta property="og:description" content="A zero-dependency &lt;daisy-time-picker&gt; custom element in light DOM, styled only with daisyUI 5 and Tailwind classes, so it inherits your theme. 12-hour and 24-hour, form-associated, 12.4 kB gzip.">
+<meta property="og:url" content="https://thititongumpun.github.io/daisyUI-timepicker/">
+<meta property="og:image" content="https://thititongumpun.github.io/daisyUI-timepicker/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="daisyui-timepicker — the time picker daisyUI doesn’t ship">
+<meta name="twitter:description" content="A zero-dependency &lt;daisy-time-picker&gt; custom element in light DOM, styled only with daisyUI 5 and Tailwind classes, so it inherits your theme.">
+<meta name="twitter:image" content="https://thititongumpun.github.io/daisyUI-timepicker/og.png">
+
+<!-- daisyUI's own light / dark base-100, so the browser chrome matches the paper. -->
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#1d232a" media="(prefers-color-scheme: dark)">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
 <link rel="stylesheet" href="out.css">
+
+<script>
+  /* Set the theme before first paint. Only the eight themes compiled in
+     app.css are ever written here — anything else is a silent no-op. */
+  (function () {
+    var t = null
+    try { t = localStorage.getItem('dtp-theme') } catch (e) { /* storage blocked */ }
+    var ok = ['light', 'dark', 'nord', 'dim', 'cupcake', 'synthwave', 'retro', 'corporate']
+    if (ok.indexOf(t) === -1) {
+      t = window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+    }
+    document.documentElement.setAttribute('data-theme', t)
+  })()
+</script>
+
+<style>
+/* Hallmark · macrostructure: Component Playground · genre: modern-minimal · nav: N5 · footer: Ft2 · theme: daisyUI (token layer preserved) · pre-emit critique: P5 H4 E4 S5 R4 V5 */
+
+/* No colour tokens are defined on this page, deliberately. daisyUI is the
+   token layer: every colour below is borrowed from the active theme through
+   var(--color-*), so switching themes repaints the page and the picker in
+   exactly the same pass. Typography is the one layer this page owns, because
+   daisyUI ships no fonts — those tokens live in app.css. */
+:root {
+  --space-2xs: 0.25rem;
+  --space-xs:  0.5rem;
+  --space-sm:  0.75rem;
+  --space-md:  1rem;
+  --space-lg:  1.5rem;
+  --space-xl:  2.5rem;
+  --space-2xl: 4rem;
+  --space-3xl: 6rem;
+
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --dur-micro: 120ms;
+  --dur-short: 200ms;
+
+  --z-raised: 10;
+  --z-nav: 300;
+
+  --nav-h: 3.25rem;
+  --rule: 1px solid var(--color-base-300);
+  --ink-2: color-mix(in oklab, var(--color-base-content) 72%, var(--color-base-100));
+}
+
+html {
+  overflow-x: clip;
+  scroll-behavior: smooth;
+  scroll-padding-top: calc(var(--nav-h) + var(--space-xl));
+}
+body {
+  overflow-x: clip;
+  transition: background-color var(--dur-short) var(--ease-out),
+              color var(--dur-short) var(--ease-out);
+}
+
+/* ---- type ------------------------------------------------------------- */
+
+.dsp {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+  overflow-wrap: anywhere;
+  min-width: 0;
+}
+h1.dsp { font-size: clamp(2.125rem, 3.6vw + 0.75rem, 3.5rem); }
+h2.dsp {
+  font-size: clamp(1.5rem, 1.8vw + 0.85rem, 2.125rem);
+  letter-spacing: -0.02em;
+  line-height: 1.12;
+}
+h3 {
+  font-family: var(--font-display);
+  font-weight: 500;
+  letter-spacing: -0.015em;
+  font-size: 1.0625rem;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+  min-width: 0;
+}
+.lede { max-width: 58ch; font-size: 1.0625rem; line-height: 1.6; color: var(--ink-2); }
+.note { max-width: 66ch; line-height: 1.6; color: var(--ink-2); font-size: 0.9375rem; }
+.note--tight { max-width: 52ch; font-size: 0.875rem; }
+/* Mono is reserved for things you would type: code, keys, package names,
+   semver, daisyUI theme ids, ValidityState flags. Never for UI chrome — the
+   copy button and the callout flag use the body face for exactly that reason. */
+code, kbd, pre, .mono { font-family: var(--font-mono); font-variant-ligatures: none; }
+.num { font-variant-numeric: tabular-nums; }
+
+/* ---- shell ------------------------------------------------------------ */
+
+.wrap {
+  width: 100%;
+  max-width: 72rem;
+  margin-inline: auto;
+  padding-inline: max(var(--space-md), env(safe-area-inset-left));
+}
+.skip {
+  position: absolute;
+  inset-block-start: var(--space-xs);
+  inset-inline-start: var(--space-xs);
+  z-index: calc(var(--z-nav) + 1);
+  padding: var(--space-xs) var(--space-sm);
+  background: var(--color-base-100);
+  color: var(--color-base-content);
+  border: var(--rule);
+  border-radius: 999px;
+  white-space: nowrap;
+  transform: translateY(-200%);
+}
+.skip:focus-visible { transform: none; outline: 2px solid var(--color-primary); outline-offset: 2px; }
+
+/* ---- N5 floating pill ------------------------------------------------- */
+
+.nav {
+  position: fixed;
+  inset: var(--space-sm) auto auto 50%;
+  transform: translateX(-50%);
+  z-index: var(--z-nav);
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  max-width: calc(100% - var(--space-lg));
+  padding: var(--space-2xs) var(--space-2xs) var(--space-2xs) var(--space-sm);
+  border: var(--rule);
+  border-radius: 999px;
+  background: color-mix(in oklab, var(--color-base-100) 84%, transparent);
+  backdrop-filter: blur(14px) saturate(120%);
+  box-shadow: 0 8px 24px -14px color-mix(in oklab, var(--color-base-content) 45%, transparent);
+  transition: background-color var(--dur-short) var(--ease-out),
+              border-color var(--dur-short) var(--ease-out);
+}
+.nav__mark {
+  font-family: var(--font-mono);
+  font-weight: 500;
+  font-size: 0.8125rem;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  white-space: nowrap;
+  color: var(--color-base-content);
+  text-decoration: none;
+}
+.nav__ver {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  line-height: 1;
+  padding: var(--space-2xs) var(--space-xs);
+  border: var(--rule);
+  border-radius: 999px;
+  color: var(--ink-2);
+  white-space: nowrap;
+}
+.nav__links { display: flex; align-items: center; gap: var(--space-md); list-style: none; margin: 0; padding: 0; }
+.nav__link {
+  font-size: 0.8125rem;
+  line-height: 1;
+  white-space: nowrap;
+  text-decoration: none;
+  color: var(--ink-2);
+  transition: color var(--dur-micro) var(--ease-out);
+}
+@media (hover: hover) { .nav__link:hover { color: var(--color-base-content); } }
+.nav__link:active { color: var(--color-primary); }
+.nav__link:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 3px; border-radius: 2px; }
+.nav__gh {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2rem;
+  font-size: 0.8125rem;
+  line-height: 1;
+  white-space: nowrap;
+  text-decoration: none;
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: 999px;
+  color: var(--color-base-content);
+  border: var(--rule);
+  transition: background-color var(--dur-micro) var(--ease-out);
+}
+@media (hover: hover) { .nav__gh:hover { background: var(--color-base-200); } }
+.nav__gh:active { transform: translateY(1px); }
+.nav__gh:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 2px; }
+.nav__select {
+  flex: 0 0 auto;
+  width: auto;
+  min-width: 6.5rem;
+  font-size: 0.75rem;
+  height: 2rem;
+  min-height: 2rem;
+}
+@media (hover: hover) { .nav__select:hover:not(:disabled) { border-color: var(--color-base-content); } }
+.nav__select:active:not(:disabled) { transform: translateY(1px); }
+.nav__select:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 2px; }
+.nav__select:disabled { opacity: 0.55; cursor: not-allowed; }
+/* The pill stays content-sized and one line at every width. Below 64rem the
+   anchor list goes (the sections it points at are directly below anyway);
+   below 30rem the wordmark drops its scope prefix and the version chip goes
+   with it — v0.1.1 is repeated in the footer, so it is never lost. */
+@media (max-width: 63.9375rem) { .nav__links { display: none; } }
+@media (max-width: 29.9375rem) {
+  .nav { gap: var(--space-xs); padding-inline: 0.625rem 0.375rem; }
+  .nav__mark-scope, .nav__ver { display: none; }
+  .nav__gh { padding: var(--space-xs); font-size: 0.75rem; }
+}
+
+/* ---- sections --------------------------------------------------------- */
+
+/* Bottom padding is 1.42× the top, so the hero settles into the band below
+   it instead of floating. Top clears the fixed pill by ~2.5rem. */
+.hero { padding-block: var(--space-3xl) calc(var(--space-3xl) + var(--space-xl)); }
+.hero__grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-xl); }
+@media (min-width: 60rem) {
+  .hero__grid { grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr); gap: var(--space-2xl); align-items: start; }
+}
+.facts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-md) var(--space-lg);
+  margin: var(--space-xl) 0 0;
+  padding-block-start: var(--space-lg);
+  border-block-start: var(--rule);
+}
+@media (min-width: 40rem) { .facts { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+.facts dt { font-size: 0.75rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-2); }
+.facts dd {
+  margin: var(--space-2xs) 0 0;
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 1.375rem;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+  min-width: 0;
+}
+.facts dd small { font-size: 0.75rem; font-weight: 400; color: var(--ink-2); }
+
+.band {
+  background: var(--color-base-200);
+  color: var(--color-base-content);
+  border-block: var(--rule);
+  padding-block: var(--space-2xl) calc(var(--space-2xl) + var(--space-md));
+}
+.sec { padding-block: calc(var(--space-2xl) + var(--space-md)) var(--space-3xl); }
+.sec--api { padding-block: var(--space-2xl) var(--space-xl); border-block-start: var(--rule); }
+.sec--fw { padding-block: var(--space-2xl) var(--space-2xl); border-block-start: var(--rule); }
+.head { display: block; margin-block-end: var(--space-lg); }
+.head > * + * { margin-block-start: var(--space-sm); }
+
+/* ---- the @source callout ---------------------------------------------- */
+
+.callout {
+  border: 1px solid var(--color-warning);
+  border-radius: 0.625rem;
+  background: color-mix(in oklab, var(--color-warning) 8%, var(--color-base-100));
+  color: var(--color-base-content);
+  padding: var(--space-lg);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-md);
+}
+.callout__flag {
+  font-weight: 600;
+  font-size: 0.6875rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-base-content);
+  line-height: 1;
+}
+/* One containment layer only — the code inside the callout drops its own box
+   and keeps a typographic frame (label + rule), so this is not a card in a card. */
+.callout .codebox { border: 0; border-radius: 0; background: transparent; }
+.callout .codebox__head {
+  padding-inline: 0;
+  border-block-end: 1px solid color-mix(in oklab, var(--color-warning) 45%, transparent);
+}
+.callout .codebox pre { padding-inline: 0; }
+
+/* ---- code panes (typographic frame — no window chrome) ----------------- */
+
+.codebox { border: var(--rule); border-radius: 0.5rem; background: var(--color-base-100); overflow: visible; }
+.codebox__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-sm);
+  min-height: 2.75rem;
+  padding-inline: var(--space-md);
+  border-block-end: var(--rule);
+}
+.codebox__label {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  line-height: 1;
+  color: var(--ink-2);
+  white-space: nowrap;
+}
+.codebox pre {
+  margin: 0;
+  padding: var(--space-md);
+  overflow-x: auto;
+  font-size: 0.875rem;
+  line-height: 1.65;
+  tab-size: 2;
+}
+
+/* ---- copy button (8 states) ------------------------------------------- */
+
+.copy {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2xs);
+  line-height: 1;
+  white-space: nowrap;
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  min-height: 2rem;
+  padding: var(--space-xs) var(--space-sm);
+  border: var(--rule);
+  border-radius: 0.375rem;
+  background: var(--color-base-100);
+  color: var(--ink-2);
+  cursor: pointer;
+  transition: background-color var(--dur-micro) var(--ease-out),
+              color var(--dur-micro) var(--ease-out),
+              border-color var(--dur-micro) var(--ease-out),
+              transform 100ms var(--ease-out);
+}
+@media (pointer: coarse) { .copy { min-height: 44px; } }
+@media (hover: hover) { .copy:hover:not(:disabled) { background: var(--color-base-200); } }
+.copy:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 2px; }
+.copy:active:not(:disabled) { transform: translateY(1px); }
+.copy:disabled { opacity: 0.55; cursor: not-allowed; }
+.copy[data-state="busy"] { color: var(--ink-2); }
+.copy[data-state="copied"] { color: var(--color-success); border-color: var(--color-success); }
+.copy[data-state="error"] { color: var(--color-error); border-color: var(--color-error); }
+.copy__tick {
+  opacity: 0;
+  transform: scale(0.7);
+  transition: opacity var(--dur-micro) var(--ease-out), transform var(--dur-micro) var(--ease-out);
+}
+.copy[data-state="copied"] .copy__tick { opacity: 1; transform: none; }
+
+/* ---- playground blocks ------------------------------------------------ */
+
+.blocks { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-lg); }
+.blk {
+  border: var(--rule);
+  border-radius: 0.5rem;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  transition: border-color var(--dur-short) var(--ease-out);
+}
+.blk__preview {
+  min-width: 0;
+  padding: var(--space-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  justify-content: center;
+}
+.blk__code {
+  min-width: 0;
+  background: var(--color-base-200);
+  color: var(--color-base-content);
+  border-block-start: var(--rule);
+  border-end-start-radius: inherit;
+  border-end-end-radius: inherit;
+}
+.blk__codehead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-sm);
+  min-height: 2.75rem;
+  padding-inline: var(--space-md);
+  border-block-end: var(--rule);
+}
+.blk__code pre {
+  margin: 0;
+  padding: var(--space-md);
+  overflow-x: auto;
+  font-size: 0.875rem;
+  line-height: 1.65;
+  tab-size: 2;
+}
+@media (min-width: 60rem) {
+  .blk { grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); }
+  .blk__code {
+    border-block-start: 0;
+    border-inline-start: var(--rule);
+    border-end-start-radius: 0;
+    border-start-end-radius: inherit;
+  }
+  .blk--flip .blk__code {
+    order: -1;
+    border-inline-start: 0;
+    border-inline-end: var(--rule);
+    border-start-end-radius: 0;
+    border-end-end-radius: 0;
+    border-start-start-radius: inherit;
+    border-end-start-radius: inherit;
+  }
+}
+/* Borderless on purpose: it already sits inside the block's border, and the
+   state is carried by the word ("valid" / "invalid"), not by colour alone. */
+.readout {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  padding: var(--space-2xs) var(--space-sm);
+  border-radius: 0.375rem;
+  background: var(--color-base-200);
+  color: var(--color-base-content);
+  overflow-wrap: anywhere;
+  min-width: 0;
+}
+.readout[data-valid="false"] { color: var(--color-error); }
+.readout[data-valid="true"] { color: var(--color-success); }
+.swatches { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-md); }
+@media (min-width: 30rem) { .swatches { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+/* Hairline rule, not a border box — three bordered swatches inside a bordered
+   block would be card-in-card. The fill is each theme's own base-100. */
+.swatch { min-width: 0; padding: var(--space-sm); border-block-start: var(--rule); }
+.swatch__name {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  display: block;
+  margin-block-end: var(--space-2xs);
+}
+
+/* ---- framework tabs (CSS-only radios, normal flow — no scroll jump) ---- */
+
+.fw__radio { display: block; width: 0; height: 0; margin: 0; padding: 0; border: 0; opacity: 0; appearance: none; }
+.fw__tabs { display: flex; flex-wrap: wrap; gap: var(--space-2xs); margin-block-end: var(--space-md); }
+.fw__tab {
+  display: inline-flex;
+  align-items: center;
+  line-height: 1;
+  white-space: nowrap;
+  cursor: pointer;
+  font-size: 0.875rem;
+  min-height: 2.5rem;
+  padding: var(--space-xs) var(--space-md);
+  border: var(--rule);
+  border-radius: 999px;
+  color: var(--ink-2);
+  background: var(--color-base-100);
+  transition: background-color var(--dur-micro) var(--ease-out),
+              color var(--dur-micro) var(--ease-out),
+              border-color var(--dur-micro) var(--ease-out),
+              transform 100ms var(--ease-out);
+}
+@media (pointer: coarse) { .fw__tab { min-height: 44px; } }
+@media (hover: hover) { .fw__tab:hover { background: var(--color-base-200); } }
+.fw__tab:active { transform: translateY(1px); }
+.fw__panel { display: none; }
+#fw-html:checked   ~ .fw__panels > .fw__panel--html,
+#fw-preact:checked ~ .fw__panels > .fw__panel--preact,
+#fw-react:checked  ~ .fw__panels > .fw__panel--react { display: block; }
+#fw-html:checked   ~ .fw__tabs > [for="fw-html"],
+#fw-preact:checked ~ .fw__tabs > [for="fw-preact"],
+#fw-react:checked  ~ .fw__tabs > [for="fw-react"] {
+  background: var(--color-primary);
+  color: var(--color-primary-content);
+  border-color: var(--color-primary);
+}
+#fw-html:focus-visible   ~ .fw__tabs > [for="fw-html"],
+#fw-preact:focus-visible ~ .fw__tabs > [for="fw-preact"],
+#fw-react:focus-visible  ~ .fw__tabs > [for="fw-react"] {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* ---- API tables ------------------------------------------------------- */
+
+.tablewrap { overflow-x: auto; border: var(--rule); border-radius: 0.5rem; }
+.tbl { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
+.tbl th, .tbl td { text-align: start; padding: 0.625rem var(--space-md); border-block-end: var(--rule); vertical-align: top; }
+.tbl tr:last-child td { border-block-end: 0; }
+.tbl th {
+  font-family: var(--font-mono);
+  font-weight: 500;
+  font-size: 0.6875rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+  white-space: nowrap;
+}
+.tbl td code, .tbl td kbd { white-space: nowrap; font-size: 0.8125rem; }
+.tbl kbd { border: var(--rule); border-radius: 0.25rem; padding: 0 var(--space-2xs); }
+
+/* ---- Ft2 inline footer ------------------------------------------------ */
+
+.foot { border-block-start: var(--rule); padding-block: var(--space-lg) calc(var(--space-lg) + env(safe-area-inset-bottom)); }
+.foot__line {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-xs) var(--space-md);
+  font-size: 0.8125rem;
+  line-height: 1;
+  color: var(--ink-2);
+}
+.foot__mark { font-family: var(--font-mono); color: var(--color-base-content); white-space: nowrap; }
+.foot__link { white-space: nowrap; color: var(--ink-2); text-decoration: none; border-block-end: 1px solid transparent; }
+@media (hover: hover) { .foot__link:hover { color: var(--color-base-content); border-block-end-color: currentColor; } }
+.foot__link:active { color: var(--color-primary); }
+.foot__link:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 3px; border-radius: 2px; }
+
+/* ---- reduced motion --------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+</style>
 </head>
-<body class="min-h-screen bg-base-200 p-8">
-<div class="mx-auto max-w-3xl space-y-8">
 
-<header class="space-y-1">
-  <h1 class="text-2xl font-bold">daisy-time-picker demo</h1>
-  <p class="text-sm opacity-70">
-    Manual, browser-only proof that the emitted daisyUI/Tailwind classes are
-    actually styled — see <code>README-manual-checks.md</code> for what only a
-    real browser (not the test suite) can verify.
-  </p>
-</header>
+<body class="bg-base-100 text-base-content">
 
-<form id="demo-form" class="space-y-6">
+<a class="skip" href="#demo">Skip to the demo</a>
 
-  <fieldset class="fieldset bg-base-100 border border-base-300 rounded p-4">
-    <legend class="fieldset-legend">1. 24-hour</legend>
-    <label for="picker-24" class="label">Meeting time (24h)</label>
-    <daisy-time-picker id="picker-24" name="time24" hour-cycle="24"></daisy-time-picker>
-  </fieldset>
+<!-- N5 · floating pill: content-sized, detached from the edges. -->
+<nav class="nav" aria-label="Primary">
+  <a class="nav__mark" href="#demo"><span class="nav__mark-scope">daisyui-</span>timepicker</a>
+  <span class="nav__ver num">v0.1.1</span>
+  <ul class="nav__links">
+    <li><a class="nav__link" href="#demo">Demo</a></li>
+    <li><a class="nav__link" href="#install">Install</a></li>
+    <li><a class="nav__link" href="#api">API</a></li>
+    <li><a class="nav__link" href="#frameworks">Frameworks</a></li>
+  </ul>
+  <label class="sr-only" for="theme-select">daisyUI theme</label>
+  <select id="theme-select" class="select select-sm nav__select" disabled title="Theme switching needs JavaScript">
+    <option value="light">light</option>
+    <option value="dark">dark</option>
+    <option value="nord">nord</option>
+    <option value="dim">dim</option>
+    <option value="cupcake">cupcake</option>
+    <option value="synthwave">synthwave</option>
+    <option value="retro">retro</option>
+    <option value="corporate">corporate</option>
+  </select>
+  <a class="nav__gh" href="https://github.com/thititongumpun/daisyUI-timepicker" rel="noopener">GitHub</a>
+</nav>
 
-  <fieldset class="fieldset bg-base-100 border border-base-300 rounded p-4">
-    <legend class="fieldset-legend">2. 12-hour</legend>
-    <daisy-time-picker name="time12" hour-cycle="12"></daisy-time-picker>
-  </fieldset>
+<main>
 
-  <fieldset class="fieldset bg-base-100 border border-base-300 rounded p-4">
-    <legend class="fieldset-legend">3. Constrained (09:00&ndash;18:00, 15 min step)</legend>
-    <daisy-time-picker name="timeWorkday" min="09:00" max="18:00" step="900"></daisy-time-picker>
-  </fieldset>
+<!-- ============ hero: opens on a working picker, not a claim ============ -->
+<section id="demo" class="hero">
+  <div class="wrap">
+    <div class="hero__grid">
 
-  <fieldset class="fieldset bg-base-100 border border-base-300 rounded p-4">
-    <legend class="fieldset-legend">4. Required, empty</legend>
-    <daisy-time-picker name="timeRequired" required></daisy-time-picker>
-  </fieldset>
+      <div>
+        <h1 class="dsp">The time picker daisyUI doesn’t ship.</h1>
+        <p class="lede" style="margin-block-start: var(--space-md)">
+          One custom element in light DOM, so your daisyUI theme reaches inside it —
+          no shadow root, no <code>::part()</code>.
+        </p>
 
-  <div class="flex gap-2">
-    <button type="submit" class="btn btn-primary">Submit</button>
-    <button type="reset" class="btn">Reset</button>
+        <p id="theme-note" class="note note--tight" style="margin-block-start: var(--space-md)" hidden>
+          Theme changed for this page only — the browser blocked local storage, so the
+          choice will not survive a reload.
+        </p>
+
+        <dl class="facts">
+          <div>
+            <dt>Shipped JS</dt>
+            <dd class="num">12.4 kB <small>gzip</small></dd>
+          </div>
+          <div>
+            <dt>Runtime deps</dt>
+            <dd class="num">0</dd>
+          </div>
+          <div>
+            <dt>Tests passing</dt>
+            <dd class="num">196</dd>
+          </div>
+          <div>
+            <dt>Licence</dt>
+            <dd>MIT</dd>
+          </div>
+        </dl>
+      </div>
+
+      <div style="display: grid; gap: var(--space-md)">
+        <div class="codebox" style="padding: var(--space-lg)">
+          <label class="label" for="hero-time">Meeting time</label>
+          <daisy-time-picker id="hero-time" name="time" hour-cycle="24" value="09:30"></daisy-time-picker>
+          <p class="note note--tight" style="margin-block-start: var(--space-sm)">
+            A real element on a real page. Change the theme in the nav and watch it repaint.
+          </p>
+          <noscript>
+            <p class="note note--tight" style="margin-block-start: var(--space-sm)">
+              JavaScript is off, so the element above has not registered and renders empty.
+              Every code block on this page still reads.
+            </p>
+          </noscript>
+        </div>
+
+        <div class="codebox">
+          <div class="codebox__head">
+            <span class="codebox__label">Install</span>
+            <button type="button" class="copy" data-copy="#code-install" disabled title="Copying needs JavaScript">
+              <span class="copy__tick" aria-hidden="true">✓</span><span class="copy__label">Copy</span>
+            </button>
+          </div>
+          <pre><code id="code-install">npm install daisyui-timepicker daisyui tailwindcss</code></pre>
+        </div>
+      </div>
+
+    </div>
   </div>
-</form>
-
-<section class="space-y-2">
-  <h2 class="text-lg font-semibold">Live readout</h2>
-  <p class="text-sm opacity-70">Updates on every <code>change</code> and <code>submit</code>.</p>
-  <pre id="readout" class="bg-neutral text-neutral-content text-xs p-4 rounded overflow-x-auto"></pre>
 </section>
 
-</div>
+<!-- ============ the one silent failure mode ============ -->
+<section id="install" class="band">
+  <div class="wrap">
+    <div class="head">
+      <h2 class="dsp">One line of CSS, or it renders as plain text.</h2>
+      <p class="note">
+        Tailwind does not scan <code>node_modules</code>. Leave this line out of your CSS
+        and the picker renders as unstyled stacked text — no console error, no build
+        warning, no failing check. It is the single most expensive thing to get wrong here,
+        so it sits above the examples rather than below them.
+      </p>
+    </div>
 
-<script type="module" src="../dist/index.js"></script>
-<script type="module">
-const form = document.getElementById('demo-form')
-const readout = document.getElementById('readout')
-const pickers = Array.from(form.querySelectorAll('daisy-time-picker'))
-const FLAGS = [
-  'valueMissing', 'badInput', 'rangeUnderflow', 'rangeOverflow',
-  'stepMismatch', 'typeMismatch', 'patternMismatch', 'tooLong', 'tooShort', 'customError',
-]
+    <div class="callout">
+      <span class="callout__flag">Required in your own CSS</span>
+      <div class="codebox" style="background: var(--color-base-100)">
+        <div class="codebox__head">
+          <span class="codebox__label">app.css</span>
+          <button type="button" class="copy" data-copy="#code-source" disabled title="Copying needs JavaScript">
+            <span class="copy__tick" aria-hidden="true">✓</span><span class="copy__label">Copy</span>
+          </button>
+        </div>
+        <pre><code id="code-source">@source "../node_modules/daisyui-timepicker/dist";</code></pre>
+      </div>
+      <p class="note" style="max-width: 62ch">
+        The path is relative to <em>your</em> CSS file. On Tailwind v3, add the same path to
+        the <code>content</code> array instead. This demo does the same thing one directory
+        up — <code>demo/app.css</code> carries <code>@source "../dist"</code>, and deleting
+        it strips every class off the pickers below.
+      </p>
+    </div>
+  </div>
+</section>
 
-function render() {
-  const data = new FormData(form)
-  const entries = Array.from(data.entries())
+<!-- ============ playground ============ -->
+<section class="sec">
+  <div class="wrap">
+    <div class="head">
+      <h2 class="dsp">Five pickers. Copy the one you need.</h2>
+      <p class="note">
+        Each preview is the live element, not a screenshot. Each snippet is the markup that
+        produced it.
+      </p>
+    </div>
 
-  const pickerInfo = pickers.map(p => {
-    const flags = {}
-    for (const f of FLAGS) if (p.validity?.[f]) flags[f] = true
-    return {
-      name: p.getAttribute('name'),
-      value: p.value,
-      resolvedHourCycle: p.resolvedHourCycle,
-      validity: flags,
+    <div class="blocks">
+
+      <!-- 1 · 24-hour -->
+      <article class="blk">
+        <div class="blk__preview">
+          <h3>24-hour</h3>
+          <p class="note note--tight"><code>hour-cycle="24"</code> pins the format regardless of locale.</p>
+          <label class="label" for="p-24">Meeting time</label>
+          <daisy-time-picker id="p-24" name="t24" hour-cycle="24" value="14:00"></daisy-time-picker>
+        </div>
+        <div class="blk__code">
+          <div class="blk__codehead">
+            <span class="codebox__label">HTML</span>
+            <button type="button" class="copy" data-copy="#code-24" disabled title="Copying needs JavaScript">
+              <span class="copy__tick" aria-hidden="true">✓</span><span class="copy__label">Copy</span>
+            </button>
+          </div>
+          <pre><code id="code-24">&lt;label for="meeting" class="label"&gt;Meeting time&lt;/label&gt;
+&lt;daisy-time-picker
+  id="meeting"
+  name="time"
+  hour-cycle="24"
+  value="14:00"
+&gt;&lt;/daisy-time-picker&gt;</code></pre>
+        </div>
+      </article>
+
+      <!-- 2 · 12-hour -->
+      <article class="blk blk--flip">
+        <div class="blk__preview">
+          <h3>12-hour</h3>
+          <p class="note note--tight">
+            AM/PM labels are hardcoded ASCII, not <code>Intl</code>-localised, so test
+            assertions stay locale-stable.
+          </p>
+          <label class="label" for="p-12">Alarm</label>
+          <daisy-time-picker id="p-12" name="t12" hour-cycle="12" value="21:00"></daisy-time-picker>
+        </div>
+        <div class="blk__code">
+          <div class="blk__codehead">
+            <span class="codebox__label">HTML</span>
+            <button type="button" class="copy" data-copy="#code-12" disabled title="Copying needs JavaScript">
+              <span class="copy__tick" aria-hidden="true">✓</span><span class="copy__label">Copy</span>
+            </button>
+          </div>
+          <pre><code id="code-12">&lt;label for="alarm" class="label"&gt;Alarm&lt;/label&gt;
+&lt;daisy-time-picker
+  id="alarm"
+  name="alarm"
+  hour-cycle="12"
+  value="21:00"
+&gt;&lt;/daisy-time-picker&gt;</code></pre>
+        </div>
+      </article>
+
+      <!-- 3 · constrained -->
+      <article class="blk">
+        <div class="blk__preview">
+          <h3>Constrained</h3>
+          <p class="note note--tight">
+            <code>step</code> is in seconds, like native <code>&lt;input type="time"&gt;</code>.
+            Out-of-range values are kept verbatim, never clamped.
+          </p>
+          <label class="label" for="p-range">Office hours</label>
+          <daisy-time-picker id="p-range" name="trange" hour-cycle="24" min="09:00" max="18:00" step="900" value="09:15"></daisy-time-picker>
+        </div>
+        <div class="blk__code">
+          <div class="blk__codehead">
+            <span class="codebox__label">HTML</span>
+            <button type="button" class="copy" data-copy="#code-range" disabled title="Copying needs JavaScript">
+              <span class="copy__tick" aria-hidden="true">✓</span><span class="copy__label">Copy</span>
+            </button>
+          </div>
+          <pre><code id="code-range">&lt;label for="office" class="label"&gt;Office hours&lt;/label&gt;
+&lt;daisy-time-picker
+  id="office"
+  name="office"
+  hour-cycle="24"
+  min="09:00"
+  max="18:00"
+  step="900"
+&gt;&lt;/daisy-time-picker&gt;</code></pre>
+        </div>
+      </article>
+
+      <!-- 4 · required + live validity -->
+      <article class="blk blk--flip">
+        <div class="blk__preview">
+          <h3>Required, with live validity</h3>
+          <p class="note note--tight">
+            Form association runs through <code>ElementInternals</code> — no hidden input.
+            Clear the field and submit to see <code>valueMissing</code>.
+          </p>
+          <form id="req-form" novalidate style="display: grid; gap: var(--space-sm)">
+            <label class="label" for="p-req">Start time</label>
+            <daisy-time-picker id="p-req" name="start" hour-cycle="24" required></daisy-time-picker>
+            <div style="display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-sm)">
+              <button type="submit" class="btn btn-primary" style="white-space: nowrap">Check validity</button>
+              <output id="req-out" class="readout" role="status" aria-live="polite" data-valid="false">validity · not checked yet</output>
+            </div>
+          </form>
+        </div>
+        <div class="blk__code">
+          <div class="blk__codehead">
+            <span class="codebox__label">HTML</span>
+            <button type="button" class="copy" data-copy="#code-req" disabled title="Copying needs JavaScript">
+              <span class="copy__tick" aria-hidden="true">✓</span><span class="copy__label">Copy</span>
+            </button>
+          </div>
+          <pre><code id="code-req">&lt;form&gt;
+  &lt;label for="start" class="label"&gt;Start time&lt;/label&gt;
+  &lt;daisy-time-picker id="start" name="start" required&gt;
+  &lt;/daisy-time-picker&gt;
+  &lt;button class="btn btn-primary"&gt;Check validity&lt;/button&gt;
+&lt;/form&gt;
+
+&lt;script type="module"&gt;
+  const el = document.getElementById('start')
+  el.checkValidity()          // false while empty
+  el.validity.valueMissing    // true
+&lt;/script&gt;</code></pre>
+        </div>
+      </article>
+
+      <!-- 5 · theme-follow proof -->
+      <article class="blk">
+        <div class="blk__preview">
+          <h3>It follows <code>data-theme</code></h3>
+          <p class="note note--tight">
+            Three pickers, three ancestors carrying a different <code>data-theme</code>, one
+            page. The element emits only daisyUI classes, so it inherits like any other
+            daisyUI component.
+          </p>
+          <div class="swatches">
+            <div class="swatch bg-base-100 text-base-content" data-theme="nord">
+              <span class="swatch__name">nord</span>
+              <daisy-time-picker id="p-nord" hour-cycle="24" value="08:00"></daisy-time-picker>
+            </div>
+            <div class="swatch bg-base-100 text-base-content" data-theme="synthwave">
+              <span class="swatch__name">synthwave</span>
+              <daisy-time-picker id="p-synth" hour-cycle="24" value="23:45"></daisy-time-picker>
+            </div>
+            <div class="swatch bg-base-100 text-base-content" data-theme="retro">
+              <span class="swatch__name">retro</span>
+              <daisy-time-picker id="p-retro" hour-cycle="12" value="17:30"></daisy-time-picker>
+            </div>
+          </div>
+        </div>
+        <div class="blk__code">
+          <div class="blk__codehead">
+            <span class="codebox__label">HTML</span>
+            <button type="button" class="copy" data-copy="#code-theme" disabled title="Copying needs JavaScript">
+              <span class="copy__tick" aria-hidden="true">✓</span><span class="copy__label">Copy</span>
+            </button>
+          </div>
+          <pre><code id="code-theme">&lt;div data-theme="nord" class="bg-base-100 text-base-content"&gt;
+  &lt;daisy-time-picker hour-cycle="24" value="08:00"&gt;&lt;/daisy-time-picker&gt;
+&lt;/div&gt;
+
+&lt;div data-theme="synthwave" class="bg-base-100 text-base-content"&gt;
+  &lt;daisy-time-picker hour-cycle="24" value="23:45"&gt;&lt;/daisy-time-picker&gt;
+&lt;/div&gt;</code></pre>
+        </div>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============ frameworks ============ -->
+<section id="frameworks" class="sec--fw">
+  <div class="wrap">
+    <div class="head">
+      <h2 class="dsp">Three ways to mount it.</h2>
+      <p class="note">
+        Copied verbatim from the README, so these cannot drift from the documented API.
+      </p>
+    </div>
+
+    <div class="fw">
+      <input class="fw__radio" type="radio" name="fw" id="fw-html" checked>
+      <input class="fw__radio" type="radio" name="fw" id="fw-preact">
+      <input class="fw__radio" type="radio" name="fw" id="fw-react">
+
+      <div class="fw__tabs">
+        <label class="fw__tab" for="fw-html">HTML</label>
+        <label class="fw__tab" for="fw-preact">Preact</label>
+        <label class="fw__tab" for="fw-react">React + Next</label>
+      </div>
+
+      <div class="fw__panels">
+
+        <div class="fw__panel fw__panel--html">
+          <div class="codebox">
+            <div class="codebox__head">
+              <span class="codebox__label">Plain HTML</span>
+              <button type="button" class="copy" data-copy="#code-fw-html" disabled title="Copying needs JavaScript">
+                <span class="copy__tick" aria-hidden="true">✓</span><span class="copy__label">Copy</span>
+              </button>
+            </div>
+            <pre><code id="code-fw-html">&lt;script type="module" src="node_modules/daisyui-timepicker/dist/index.js"&gt;&lt;/script&gt;
+
+&lt;label for="meeting-time" class="label"&gt;Meeting time&lt;/label&gt;
+&lt;daisy-time-picker
+  id="meeting-time"
+  name="time"
+  hour-cycle="24"
+  min="09:00"
+  max="18:00"
+  step="900"
+&gt;&lt;/daisy-time-picker&gt;
+
+&lt;script type="module"&gt;
+  const picker = document.getElementById('meeting-time')
+  picker.addEventListener('change', e =&gt; console.log(e.target.value)) // "HH:MM"
+&lt;/script&gt;</code></pre>
+          </div>
+        </div>
+
+        <div class="fw__panel fw__panel--preact">
+          <div class="codebox">
+            <div class="codebox__head">
+              <span class="codebox__label">Preact</span>
+              <button type="button" class="copy" data-copy="#code-fw-preact" disabled title="Copying needs JavaScript">
+                <span class="copy__tick" aria-hidden="true">✓</span><span class="copy__label">Copy</span>
+              </button>
+            </div>
+            <pre><code id="code-fw-preact">import 'daisyui-timepicker'
+import 'daisyui-timepicker/preact' // JSX types only, zero runtime bytes
+import { useState } from 'preact/hooks'
+
+function Meeting() {
+  const [time, setTime] = useState('09:00')
+  return (
+    &lt;daisy-time-picker
+      value={time}
+      hour-cycle="24"
+      onChange={e =&gt; setTime(e.target.value)}
+    /&gt;
+  )
+}</code></pre>
+          </div>
+          <p class="note" style="margin-block-start: var(--space-md)">
+            Preact wires <code>onChange</code> straight to the element’s native
+            <code>change</code> event, so no <code>ref</code> is needed.
+          </p>
+        </div>
+
+        <div class="fw__panel fw__panel--react">
+          <div class="codebox">
+            <div class="codebox__head">
+              <span class="codebox__label">React 19 / Next.js</span>
+              <button type="button" class="copy" data-copy="#code-fw-react" disabled title="Copying needs JavaScript">
+                <span class="copy__tick" aria-hidden="true">✓</span><span class="copy__label">Copy</span>
+              </button>
+            </div>
+            <pre><code id="code-fw-react">'use client'
+import 'daisyui-timepicker'
+import 'daisyui-timepicker/react' // JSX types only, zero runtime bytes
+import { useEffect, useRef, useState } from 'react'
+
+function Meeting() {
+  const ref = useRef(null)
+  const [time, setTime] = useState('09:00')
+
+  useEffect(() =&gt; {
+    const el = ref.current
+    const h = e =&gt; setTime(e.target.value)
+    el.addEventListener('change', h)
+    return () =&gt; el.removeEventListener('change', h)
+  }, [])
+
+  return &lt;daisy-time-picker ref={ref} value={time} hour-cycle="24" /&gt;
+}</code></pre>
+          </div>
+          <p class="note" style="margin-block-start: var(--space-md)">
+            <strong>React does not wire <code>onChange</code> to a custom element’s
+            <code>change</code> event.</strong> React 19 sets properties on custom elements
+            directly, but its <code>ChangeEventPlugin</code> only fires synthetic
+            <code>onChange</code> for real <code>&lt;input&gt;</code>,
+            <code>&lt;select&gt;</code> and <code>&lt;textarea&gt;</code> — never for a custom
+            element. The React types in this package deliberately omit <code>onChange</code>
+            and <code>onInput</code> rather than advertise a handler that silently never
+            fires, so a <code>ref</code> is required. React 18 and earlier are not supported.
+          </p>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ condensed API ============ -->
+<section id="api" class="sec--api">
+  <div class="wrap">
+    <div class="head">
+      <h2 class="dsp">Reference, condensed.</h2>
+      <p class="note">
+        The parts you reach for first. Every attribute has a matching property, and the
+        <a class="link" href="https://github.com/thititongumpun/daisyUI-timepicker#reference" rel="noopener">full
+        reference in the README</a> carries the rest — <code>defaultValue</code>,
+        <code>resolvedHourCycle</code>, the <code>ElementInternals</code> delegates, and the
+        <code>hour-cycle="auto"</code> detection rules.
+      </p>
+    </div>
+
+    <div style="display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-lg)">
+
+      <div>
+        <h3 style="margin-block-end: var(--space-sm)">Attributes</h3>
+        <div class="tablewrap">
+          <table class="tbl">
+            <thead>
+              <tr><th scope="col">Attribute</th><th scope="col">Default</th><th scope="col">What it does</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code>value</code></td><td><code>''</code></td><td><code>"HH:MM"</code>, always 24-hour storage. Never reflected back to the attribute.</td></tr>
+              <tr><td><code>hour-cycle</code></td><td><code>null</code></td><td><code>"12"</code> or <code>"24"</code> pins the format. Anything else auto-detects from <code>Intl</code>.</td></tr>
+              <tr><td><code>min</code> / <code>max</code></td><td><code>null</code></td><td><code>"HH:MM"</code>. <code>min &gt; max</code> is an overnight wrap.</td></tr>
+              <tr><td><code>step</code></td><td><code>60</code></td><td>Seconds, like native <code>&lt;input type="time"&gt;</code>. Filters options; never rounds the value.</td></tr>
+              <tr><td><code>required</code></td><td><code>false</code></td><td>Sets <code>valueMissing</code> while empty.</td></tr>
+              <tr><td><code>disabled</code></td><td><code>false</code></td><td>Also honoured from an ancestor <code>&lt;fieldset disabled&gt;</code>.</td></tr>
+              <tr><td><code>name</code></td><td><code>null</code></td><td>Form field name, submitted through <code>ElementInternals</code>.</td></tr>
+              <tr><td><code>label</code></td><td><code>null</code></td><td>Sets <code>aria-label</code> on the internal input.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div>
+        <h3 style="margin-block-end: var(--space-sm)">Events</h3>
+        <div class="tablewrap">
+          <table class="tbl">
+            <thead>
+              <tr><th scope="col">Event</th><th scope="col">Fires</th><th scope="col">Read</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code>input</code></td><td>Every committed change while the panel is open — arrows, click, <strong>Now</strong>, parsed typing.</td><td><code>e.target.value</code></td></tr>
+              <tr><td><code>change</code></td><td>On close, when the value moved since focus or open.</td><td><code>e.target.value</code></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="note note--tight" style="margin-block-start: var(--space-sm)">
+          Both are plain <code>Event</code> objects, not <code>CustomEvent</code> — read
+          <code>e.target.value</code>, never <code>e.detail</code>.
+        </p>
+      </div>
+
+      <div>
+        <h3 style="margin-block-end: var(--space-sm)">Keyboard</h3>
+        <div class="tablewrap">
+          <table class="tbl">
+            <thead>
+              <tr><th scope="col">Key</th><th scope="col">Where</th><th scope="col">Action</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><kbd>Enter</kbd> / <kbd>↓</kbd></td><td>Trigger input</td><td>Commits typed text, opens the panel, focuses the hour column.</td></tr>
+              <tr><td><kbd>Esc</kbd></td><td>Anywhere open</td><td>Restores the value it had when the panel opened, silently, and closes.</td></tr>
+              <tr><td><kbd>←</kbd> / <kbd>→</kbd></td><td>A column</td><td>Moves between Hour, Minute and AM/PM.</td></tr>
+              <tr><td><kbd>↑</kbd> / <kbd>↓</kbd></td><td>A column</td><td>Moves and commits one enabled option.</td></tr>
+              <tr><td><kbd>PgUp</kbd> / <kbd>PgDn</kbd></td><td>A column</td><td>Moves and commits ten enabled options.</td></tr>
+              <tr><td><kbd>Home</kbd> / <kbd>End</kbd></td><td>A column</td><td>Jumps to the first or last enabled option.</td></tr>
+              <tr><td><kbd>Enter</kbd> / <kbd>Space</kbd></td><td>A column</td><td>Closes the panel; the value is already committed.</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="note note--tight" style="margin-block-start: var(--space-sm)">
+          Disabled out-of-range options are skipped by all of the above. Focus stays on the
+          listbox container the whole time via roving <code>aria-activedescendant</code>.
+        </p>
+      </div>
+
+      <div>
+        <h3 style="margin-block-end: var(--space-sm)">Support floor</h3>
+        <p class="note">
+          <code>ElementInternals</code> and custom elements v1: Chromium 77+, Firefox 98+,
+          Safari 16.4+. Built against daisyUI 5.7.16 and Tailwind v4, and verified on all
+          three Tauri webviews — WebKitGTK, WKWebView and WebView2.
+        </p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- Ft2 · inline single line -->
+<footer class="foot">
+  <div class="wrap">
+    <p class="foot__line">
+      <span class="foot__mark">daisyui-timepicker</span>
+      <span class="num">v0.1.1</span>
+      <span>MIT</span>
+      <a class="foot__link" href="https://www.npmjs.com/package/daisyui-timepicker" rel="noopener">npm</a>
+      <a class="foot__link" href="https://github.com/thititongumpun/daisyUI-timepicker" rel="noopener">GitHub</a>
+      <a class="foot__link" href="checks.html">Manual checks</a>
+    </p>
+  </div>
+</footer>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareSourceCode",
+  "name": "daisyui-timepicker",
+  "description": "A zero-dependency <daisy-time-picker> custom element in light DOM, styled only with daisyUI 5 and Tailwind utility classes so it inherits the page's daisyUI theme. 12-hour and 24-hour formats, form-associated through ElementInternals.",
+  "codeRepository": "https://github.com/thititongumpun/daisyUI-timepicker",
+  "programmingLanguage": "TypeScript",
+  "license": "https://opensource.org/licenses/MIT",
+  "runtimePlatform": "Web browser with custom elements v1 and ElementInternals (Chromium 77+, Firefox 98+, Safari 16.4+)",
+  "url": "https://thititongumpun.github.io/daisyUI-timepicker/",
+  "version": "0.1.1",
+  "author": { "@type": "Person", "name": "Thiti" }
+}
+</script>
+
+<script type="module" src="./dist/index.js"></script>
+
+<script>
+(function () {
+  'use strict'
+
+  /* ---- theme switcher ------------------------------------------------- *
+   * Offers exactly the eight themes compiled by app.css. A ninth would
+   * be a silent no-op, which is worse than not shipping the control.     */
+  var THEMES = ['light', 'dark', 'nord', 'dim', 'cupcake', 'synthwave', 'retro', 'corporate']
+  var select = document.getElementById('theme-select')
+  var themeNote = document.getElementById('theme-note')
+
+  select.value = document.documentElement.getAttribute('data-theme') || 'light'
+  select.disabled = false
+  select.removeAttribute('title')
+
+  select.addEventListener('change', function () {
+    var next = THEMES.indexOf(select.value) === -1 ? 'light' : select.value
+    document.documentElement.setAttribute('data-theme', next)
+    try {
+      localStorage.setItem('dtp-theme', next)
+      themeNote.hidden = true
+    } catch (e) {
+      // Private mode / blocked storage. Say so rather than pretend it stuck.
+      themeNote.hidden = false
     }
   })
 
-  readout.textContent = JSON.stringify(
-    {
-      formData: entries,
-      formCheckValidity: form.checkValidity(),
-      pickers: pickerInfo,
-    },
-    null,
-    2,
-  )
-}
+  /* ---- copy buttons --------------------------------------------------- */
 
-form.addEventListener('change', render)
-form.addEventListener('submit', e => {
-  e.preventDefault()
-  render()
-})
+  var canCopy = !!(navigator.clipboard && navigator.clipboard.writeText)
 
-render()
+  function setState (btn, state) {
+    if (state) btn.setAttribute('data-state', state)
+    else btn.removeAttribute('data-state')
+    var label = btn.querySelector('.copy__label')
+    label.textContent =
+      state === 'busy' ? 'Copying…' :
+      state === 'copied' ? 'Copied' :
+      state === 'error' ? 'Copy failed' : 'Copy'
+    if (state === 'error') btn.setAttribute('aria-invalid', 'true')
+    else btn.removeAttribute('aria-invalid')
+    btn.setAttribute('aria-busy', state === 'busy' ? 'true' : 'false')
+  }
+
+  Array.prototype.forEach.call(document.querySelectorAll('.copy'), function (btn) {
+    var source = document.querySelector(btn.getAttribute('data-copy'))
+    if (!source) return
+
+    if (!canCopy) {
+      btn.title = 'Clipboard unavailable in this browser — select the code and copy it'
+      btn.setAttribute('aria-disabled', 'true')
+      return // stays disabled, with a reason
+    }
+
+    btn.disabled = false
+    btn.removeAttribute('title')
+
+    var revert, slow
+    btn.addEventListener('click', function () {
+      clearTimeout(revert)
+      clearTimeout(slow)
+      // Only show a busy label if the write is actually slow — no flashing spinner.
+      slow = setTimeout(function () { setState(btn, 'busy') }, 150)
+
+      navigator.clipboard.writeText(source.textContent).then(function () {
+        clearTimeout(slow)
+        setState(btn, 'copied')
+        revert = setTimeout(function () { setState(btn, null) }, 2500)
+      }, function () {
+        clearTimeout(slow)
+        setState(btn, 'error')
+        revert = setTimeout(function () { setState(btn, null) }, 4000)
+      })
+    })
+
+    btn.addEventListener('mouseleave', function () {
+      if (btn.getAttribute('data-state') === 'copied') {
+        clearTimeout(revert)
+        setState(btn, null)
+      }
+    })
+  })
+
+  /* ---- live validity readout ------------------------------------------ */
+
+  var form = document.getElementById('req-form')
+  var picker = document.getElementById('p-req')
+  var out = document.getElementById('req-out')
+  var FLAGS = ['valueMissing', 'badInput', 'rangeUnderflow', 'rangeOverflow', 'stepMismatch']
+
+  function report () {
+    var v = picker.validity || {}
+    var hit = FLAGS.filter(function (f) { return v[f] })
+    var valid = hit.length === 0
+    out.setAttribute('data-valid', String(valid))
+    out.textContent = valid
+      ? 'valid · value ' + (picker.value || '(empty)')
+      : 'invalid · ' + hit.join(', ')
+  }
+
+  form.addEventListener('submit', function (e) { e.preventDefault(); report() })
+  picker.addEventListener('change', report)
+})()
 </script>
+
 </body>
 </html>

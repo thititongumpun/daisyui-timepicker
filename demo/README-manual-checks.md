@@ -8,12 +8,15 @@ anything, in a real browser. Run through them by hand before publishing.
 ## Running the demo
 
 ```bash
-npx @tailwindcss/cli@4 -i demo/app.css -o demo/out.css   # build demo/out.css first
-npx vite demo
+npm run demo:build   # builds dist/, copies it to demo/dist/, writes demo/out.css
+npx serve demo       # any static server rooted at demo/ works
 ```
 
-(Any static file server that serves `demo/` at its root works too, e.g.
-`npx serve demo`.)
+Then open `checks.html` — `index.html` is the landing page, these checks live at
+`/checks.html`.
+
+Live demo: https://thititongumpun.github.io/daisyUI-timepicker/ — manual checks
+at https://thititongumpun.github.io/daisyUI-timepicker/checks.html
 
 ## Checklist
 

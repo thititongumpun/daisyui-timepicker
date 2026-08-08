@@ -1,7 +1,11 @@
 # daisyui-timepicker
 
 [![npm version](https://img.shields.io/npm/v/daisyui-timepicker.svg)](https://www.npmjs.com/package/daisyui-timepicker)
-[![license](https://img.shields.io/npm/l/daisyui-timepicker.svg)](https://github.com/thititongumpun/daisyui-timepicker/blob/main/LICENSE)
+[![license](https://img.shields.io/npm/l/daisyui-timepicker.svg)](https://github.com/thititongumpun/daisyUI-timepicker/blob/main/LICENSE)
+[![CI](https://github.com/thititongumpun/daisyUI-timepicker/actions/workflows/ci.yml/badge.svg)](https://github.com/thititongumpun/daisyUI-timepicker/actions/workflows/ci.yml)
+
+**▶ [Live demo](https://thititongumpun.github.io/daisyUI-timepicker/)** — the
+element in a real browser, in a real form.
 
 A zero-dependency `<daisy-time-picker>` custom element, styled entirely with
 daisyUI 5 / Tailwind classes. Supports 12-hour and 24-hour formats.
@@ -321,3 +325,30 @@ Because everything is a daisyUI class, the picker follows whatever
 Requires `ElementInternals` (form association) and custom elements v1:
 Chromium 77+, Firefox 98+, Safari 16.4+. Verified against all three Tauri
 webviews: WebKitGTK (Linux), WKWebView (macOS), WebView2 (Windows).
+
+## Development
+
+```bash
+npm ci
+npm test          # 196 tests, vitest + jsdom
+npm run typecheck
+npm run demo:build
+```
+
+`demo/` holds two pages, both served after `npm run demo:build`:
+`index.html` is the live demo, and `checks.html` is a manual browser-check
+harness that renders several pickers inside a real `<form>` with a live
+`FormData` readout. `demo/README-manual-checks.md` walks through the 8
+things only a real browser can verify — jsdom has no cascade, no layout,
+and an incomplete `ElementInternals`.
+
+## Contributing
+
+Issues and pull requests welcome. PRs that change behaviour should include a
+changeset — run `npm run changeset` — because releases are automated through
+Changesets and npm OIDC trusted publishing. CI runs typecheck, the test
+suite, the package build, and the demo build on every pull request.
+
+## License
+
+MIT © Thiti — see [LICENSE](LICENSE).

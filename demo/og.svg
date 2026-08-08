@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-label="daisyui-timepicker — the time picker daisyUI doesn't ship">
+  <!--
+    Colours are the compiled daisyUI *light* theme, read out of demo/out.css and
+    converted from oklch: base-100 #ffffff, base-200 #f2f2f2, base-300 #e5e6e6,
+    base-content #1f2937, primary #422ad5. Hard-coded here only because an SVG
+    rendered by sharp has no daisyUI stylesheet to inherit from.
+    System font stack on purpose: this file is rasterised head-less, with no
+    webfont fetch, so Space Grotesk would silently fall back mid-render.
+  -->
+  <rect width="1200" height="630" fill="#ffffff"/>
+  <rect x="0" y="0" width="1200" height="8" fill="#422ad5"/>
+
+  <g font-family="DejaVu Sans, Liberation Sans, Arial, sans-serif">
+    <text x="80" y="128" font-size="26" fill="#422ad5" letter-spacing="4">DAISYUI 5 · TAILWIND 4 · WEB COMPONENT</text>
+
+    <text x="80" y="242" font-size="82" font-weight="bold" fill="#1f2937" letter-spacing="-2">daisyui-timepicker</text>
+    <text x="80" y="322" font-size="40" fill="#1f2937" opacity="0.72">The time picker daisyUI doesn&#8217;t ship.</text>
+
+    <!-- Facts row. Every number here is measured, not estimated. -->
+    <g font-size="30" fill="#1f2937">
+      <text x="80" y="432" opacity="0.72">12.4 kB gzip</text>
+      <text x="330" y="432" opacity="0.72">0 dependencies</text>
+      <text x="620" y="432" opacity="0.72">196 tests</text>
+      <text x="830" y="432" opacity="0.72">MIT</text>
+    </g>
+    <line x1="80" y1="470" x2="1120" y2="470" stroke="#e5e6e6" stroke-width="2"/>
+
+    <g font-family="DejaVu Sans Mono, Liberation Mono, monospace" font-size="30">
+      <text x="80" y="540" fill="#1f2937">npm i daisyui-timepicker</text>
+      <text x="80" y="586" fill="#1f2937" opacity="0.55">&lt;daisy-time-picker&gt;</text>
+    </g>
+
+    <text x="1120" y="586" font-size="24" fill="#1f2937" opacity="0.55" text-anchor="end">thititongumpun.github.io/daisyUI-timepicker</text>
+  </g>
+</svg>

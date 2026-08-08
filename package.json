@@ -39,7 +39,11 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/thititongumpun/daisyui-timepicker"
+    "url": "https://github.com/thititongumpun/daisyUI-timepicker"
+  },
+  "homepage": "https://thititongumpun.github.io/daisyUI-timepicker/",
+  "bugs": {
+    "url": "https://github.com/thititongumpun/daisyUI-timepicker/issues"
   },
   "publishConfig": {
     "access": "public"
@@ -72,7 +76,7 @@
     "build": "tsc -p tsconfig.json",
     "test": "vitest run",
     "typecheck": "tsc --noEmit -p tsconfig.json && tsc --noEmit -p tsconfig.test.json",
-    "demo:build": "npm run build && tailwindcss -i demo/app.css -o demo/out.css",
+    "demo:build": "npm run build && rm -rf demo/dist && cp -r dist demo/dist && tailwindcss -i demo/app.css -o demo/out.css",
     "prepublishOnly": "npm run build && npm test",
     "changeset": "changeset",
     "release": "changeset publish"

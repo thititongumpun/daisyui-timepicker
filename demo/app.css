@@ -12,6 +12,27 @@
  * makes removing the "../dist" line a real negative control.
  */
 @import "tailwindcss" source(none);
-@plugin "daisyui";
+
+/*
+ * The theme switcher in index.html offers exactly these eight. daisyUI only
+ * emits CSS for the themes named here, so any theme in the <select> that is
+ * missing from this list would be a silent no-op. Keep the two lists equal.
+ * Not `themes: all` — that ships every theme daisyUI has, for eight in use.
+ */
+@plugin "daisyui" {
+  themes: light --default, dark --prefersdark, nord, dim, cupcake, synthwave, retro, corporate;
+}
 @source "../dist";
 @source "./index.html";
+@source "./checks.html";
+
+/*
+ * daisyUI ships no fonts, so typography is the one token layer this file
+ * owns. --font-sans is set globally on purpose: the picker inherits the
+ * page's body face, which is half of what the demo is demonstrating.
+ */
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+  --font-display: "Space Grotesk", "Inter", ui-sans-serif, system-ui, sans-serif;
+}
