@@ -1,10 +1,10 @@
 # daisyui-timepicker
 
 [![npm version](https://img.shields.io/npm/v/daisyui-timepicker.svg)](https://www.npmjs.com/package/daisyui-timepicker)
-[![license](https://img.shields.io/npm/l/daisyui-timepicker.svg)](https://github.com/thititongumpun/daisyUI-timepicker/blob/main/LICENSE)
-[![CI](https://github.com/thititongumpun/daisyUI-timepicker/actions/workflows/ci.yml/badge.svg)](https://github.com/thititongumpun/daisyUI-timepicker/actions/workflows/ci.yml)
+[![license](https://img.shields.io/npm/l/daisyui-timepicker.svg)](https://github.com/thititongumpun/daisyui-timepicker/blob/main/LICENSE)
+[![CI](https://github.com/thititongumpun/daisyui-timepicker/actions/workflows/ci.yml/badge.svg)](https://github.com/thititongumpun/daisyui-timepicker/actions/workflows/ci.yml)
 
-**▶ [Live demo](https://thititongumpun.github.io/daisyUI-timepicker/)** — the
+**▶ [Live demo](https://thititongumpun.github.io/daisyui-timepicker/)** — the
 element in a real browser, in a real form.
 
 A zero-dependency `<daisy-time-picker>` custom element, styled entirely with

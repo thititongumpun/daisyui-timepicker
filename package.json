@@ -39,11 +39,11 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/thititongumpun/daisyUI-timepicker"
+    "url": "https://github.com/thititongumpun/daisyui-timepicker"
   },
-  "homepage": "https://thititongumpun.github.io/daisyUI-timepicker/",
+  "homepage": "https://thititongumpun.github.io/daisyui-timepicker/",
   "bugs": {
-    "url": "https://github.com/thititongumpun/daisyUI-timepicker/issues"
+    "url": "https://github.com/thititongumpun/daisyui-timepicker/issues"
   },
   "publishConfig": {
     "access": "public"

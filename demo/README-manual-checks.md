@@ -15,8 +15,8 @@ npx serve demo       # any static server rooted at demo/ works
 Then open `checks.html` — `index.html` is the landing page, these checks live at
 `/checks.html`.
 
-Live demo: https://thititongumpun.github.io/daisyUI-timepicker/ — manual checks
-at https://thititongumpun.github.io/daisyUI-timepicker/checks.html
+Live demo: https://thititongumpun.github.io/daisyui-timepicker/ — manual checks
+at https://thititongumpun.github.io/daisyui-timepicker/checks.html
 
 ## Checklist
 
