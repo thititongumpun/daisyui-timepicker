@@ -70,7 +70,7 @@
     "react": "^19.2.8",
     "tailwindcss": "^4.3.3",
     "typescript": "^7.0.0",
-    "vitest": "^4.1.8"
+    "vitest": "^5.0.0"
   },
   "scripts": {
     "build": "tsc -p tsconfig.json",
